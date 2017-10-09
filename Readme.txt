@@ -1,3 +1,5 @@
+Széll Tamás-Pál, gr. 931
+
 TODO: create define the features for an app that will support, at least, the following:
 an input form
 a list of items
