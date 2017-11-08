@@ -1,0 +1,13 @@
+<resources>
+    <!-- Menu resources -->
+    <string name="app_name">MShare</string>
+    <string name="menu_submit_button">Add a new song</string>
+    <string name="menu_show_list">Show list of songs</string>
+
+    <!-- Add new song resources -->
+    <string name="add_song_title">Title</string>
+    <string name="add_song_artist">Artist</string>
+    <string name="add_song_album">Album (optional)</string>
+    <string name="add_song_yt_link">Youtube link</string>
+    <string name="add_button_text">Submit</string>
+</resources>
