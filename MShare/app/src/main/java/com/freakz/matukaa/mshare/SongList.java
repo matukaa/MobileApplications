@@ -19,7 +19,7 @@ public class SongList extends AppCompatActivity {
         Song[] songs = { new Song("Title1", "Artist1", "Album1", "Link1"),
                         new Song("Title2", "Artist2", "Album2", "Link2")};
 
-        ListAdapter adapter = new ArrayAdapter<Song>(this, android.R.layout.simple_list_item_1, songs);
+        ListAdapter adapter = new SongAdapter(this, songs);
         song_list_view.setAdapter(adapter);
     }
 }
