@@ -10,4 +10,7 @@
     <string name="add_song_album">Album (optional)</string>
     <string name="add_song_yt_link">Youtube link</string>
     <string name="add_button_text">Submit</string>
+
+    <!-- Edit song resources -->
+    <string name="edit_song_button">Edit</string>
 </resources>
