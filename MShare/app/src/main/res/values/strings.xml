@@ -1,16 +1,18 @@
 <resources>
-    <!-- Menu resources -->
     <string name="app_name">MShare</string>
-    <string name="menu_submit_button">Add a new song</string>
-    <string name="menu_show_list">Show list of songs</string>
+    <string name="action_settings">Settings</string>
 
-    <!-- Add new song resources -->
-    <string name="add_song_title">Title</string>
-    <string name="add_song_artist">Artist</string>
-    <string name="add_song_album">Album (optional)</string>
-    <string name="add_song_yt_link">Youtube link</string>
-    <string name="add_button_text">Submit</string>
+    <string name="titletextview">Title:</string>
+    <string name="tripledot">...</string>
+    <string name="artisttextview">Artist:</string>
+    <string name="linktextview">Link:</string>
+    <string name="datetextview">Publish date:</string>
+    <string name="addsongbutton">Add song</string>
+    <string name="updatesongbutton">Update song</string>
+    <string name="deletesongbutton">Delete song</string>
+    <string name="sendsongbutton">Send song</string>
+    <string name="viewsongsbutton">View songs</string>
+    <string name="addnewsongbutton">New song</string>
+    <string name="listtitle">Songs</string>
 
-    <!-- Edit song resources -->
-    <string name="edit_song_button">Edit</string>
 </resources>

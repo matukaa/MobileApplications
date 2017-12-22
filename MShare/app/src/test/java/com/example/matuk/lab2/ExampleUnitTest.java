@@ -1,4 +1,4 @@
-package com.freakz.matukaa.mshare;
+package com.example.matuk.lab2;
 
 import org.junit.Test;
 

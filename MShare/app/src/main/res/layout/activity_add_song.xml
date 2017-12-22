@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.matuk.lab2.AddSongActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <TextView
+            android:id="@+id/TextViewSong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/titletextview"
+            android:textSize="10pt"/>
+
+        <EditText
+            android:id="@+id/EditTextTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/tripledot"
+            android:inputType="textPersonName"/>
+
+        <TextView
+            android:id="@+id/TextViewArtist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/artisttextview"
+            android:textSize="10pt"/>
+
+        <EditText
+            android:id="@+id/EditTextArtist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/tripledot"
+            android:inputType="textPersonName"/>
+
+        <TextView
+            android:id="@+id/TextViewLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/linktextview"
+            android:textSize="10pt"/>
+
+        <EditText
+            android:id="@+id/EditTextLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/tripledot"
+            android:inputType="textPersonName"/>
+
+        <TextView
+            android:id="@+id/TextViewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/datetextview"
+            android:textSize="10pt"/>
+
+        <EditText
+            android:id="@+id/EditTextDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/tripledot"
+            android:inputType="datetime"/>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/buttonAddSong"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/addsongbutton" />
+
+
+        </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
+
+</android.support.design.widget.CoordinatorLayout>
+
