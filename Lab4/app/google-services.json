@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "937511191221-01s49d1oigdgbukgha30mociulk659ft.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.freakz.matukaa.lab4",
+            "certificate_hash": "98778c3fc1bc94d03ab58f0abe5d1c80d7d7035c"
+          }
+        },
+        {
           "client_id": "937511191221-30i9uldh15ev4mtaoii76ogcc93ejgms.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -1,6 +1,7 @@
 package com.freakz.matukaa.lab4;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.freakz.matukaa.lab4.Entities.Song;
 import com.freakz.matukaa.lab4.Entities.SongAdapter;
+import com.freakz.matukaa.lab4.Manager.AppManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,11 +30,11 @@ import java.util.List;
 public class MainMenu extends AppCompatActivity {
 
     DatabaseReference databaseReference;
-    SongAdapter songAdapter;
-    List<Song> songList = new ArrayList<>();
+    AppManager appManager = AppManager.getInstance();
     ListView songListView;
     boolean fill = false;
     private Button addButton;
+    private FloatingActionButton logoutButton;
 
     static boolean isUserAdmin(FirebaseUser user){
         return user != null && user.getEmail() != null && user.getEmail().equals(MainActivity.ADMIN_EMAIL);
@@ -42,6 +44,8 @@ public class MainMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        appManager.songAdapter = new SongAdapter(this, appManager.songList);
+        logoutButton = findViewById(R.id.logoutButton);
 
         addButton = findViewById(R.id.addButton);
         if (!isUserAdmin(FirebaseAuth.getInstance().getCurrentUser()))
@@ -52,7 +56,7 @@ public class MainMenu extends AppCompatActivity {
                 public void onClick(View view) {
                     Intent i = new Intent(getBaseContext(), AddSongActivity.class);
                     int largestId = 0;
-                    for (Song s : songList) {
+                    for (Song s : appManager.songList) {
                         int songId = Integer.parseInt(s.getId());
                         if (songId > largestId)
                             largestId = songId;
@@ -64,22 +68,21 @@ public class MainMenu extends AppCompatActivity {
                 }
             });
         songListView = findViewById(R.id.songListView);
-        songAdapter = new SongAdapter(this, songList);
-        songListView.setAdapter(songAdapter);
+        songListView.setAdapter(appManager.songAdapter);
         databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("Songs").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                songList.clear();
+                appManager.songList.clear();
                 for (DataSnapshot ds : dataSnapshot.getChildren()){
                     Song song = ds.getValue(Song.class);
                     if (song != null) {
                         song.setId(ds.getKey());
                         //Log.d("Song", song.toString());
-                        songList.add(song);
+                        appManager.songList.add(song);
                     }
                 }
-                songAdapter.notifyDataSetChanged();
+                appManager.notifyListChanged();
             }
 
             @Override
@@ -97,12 +100,19 @@ public class MainMenu extends AppCompatActivity {
                     return;
 
                 Intent crud = new Intent(getBaseContext(), CrudActivity.class);
-                Song song = songList.get(i);
+                Song song = appManager.songList.get(i);
                 crud.putExtra("id", song.getId());
-                crud.putExtra("title", song.getTitle());
-                crud.putExtra("artist", song.getArtist());
-                crud.putExtra("album", song.getAlbum());
                 startActivity(crud);
+            }
+        });
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(getBaseContext(), MainActivity.class));
+                }
             }
         });
 
@@ -113,6 +123,15 @@ public class MainMenu extends AppCompatActivity {
             s2.setId("2");
             s1.writeToDb(databaseReference);
             s2.writeToDb(databaseReference);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null){
+            startActivity(new Intent(getBaseContext(), MainActivity.class));
         }
     }
 }
