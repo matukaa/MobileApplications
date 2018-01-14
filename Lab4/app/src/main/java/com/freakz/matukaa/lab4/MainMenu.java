@@ -1,6 +1,7 @@
 package com.freakz.matukaa.lab4;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.freakz.matukaa.lab4.Entities.Song;
@@ -22,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +38,7 @@ public class MainMenu extends AppCompatActivity {
     boolean fill = false;
     private Button addButton;
     private FloatingActionButton logoutButton;
+    private SearchView filterSearchView;
 
     static boolean isUserAdmin(FirebaseUser user){
         return user != null && user.getEmail() != null && user.getEmail().equals(MainActivity.ADMIN_EMAIL);
@@ -46,30 +50,14 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
         appManager.songAdapter = new SongAdapter(this, appManager.songList);
         logoutButton = findViewById(R.id.logoutButton);
+        filterSearchView = findViewById(R.id.filterSearchView);
 
         addButton = findViewById(R.id.addButton);
-        if (!isUserAdmin(FirebaseAuth.getInstance().getCurrentUser()))
-            addButton.setVisibility(View.GONE);
-        else
-            addButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(getBaseContext(), AddSongActivity.class);
-                    int largestId = 0;
-                    for (Song s : appManager.songList) {
-                        int songId = Integer.parseInt(s.getId());
-                        if (songId > largestId)
-                            largestId = songId;
-                    }
-
-                    largestId++;
-                    i.putExtra("id", "" + largestId);
-                    startActivity(i);
-                }
-            });
         songListView = findViewById(R.id.songListView);
         songListView.setAdapter(appManager.songAdapter);
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        FirebaseMessaging.getInstance().subscribeToTopic("mshare_notifications");
+
         databaseReference.child("Songs").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -91,13 +79,48 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
+        if (fill) {
+            Song s1 = new Song("Title1", "Artist1", "Album1", "Link1", "2017/02/03");
+            Song s2 = new Song("Title2", "Artist2", "Album2", "Link2", "2017/02/03");
+            s1.setId("1");
+            s2.setId("2");
+            s1.writeToDb(databaseReference);
+            s2.writeToDb(databaseReference);
+        }
+
+        setupOnClickListeners();
+    }
+
+    public void setupOnClickListeners(){
+        if (!isUserAdmin(FirebaseAuth.getInstance().getCurrentUser()))
+            addButton.setVisibility(View.GONE);
+        else
+            addButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(getBaseContext(), AddSongActivity.class);
+                    int largestId = 0;
+                    for (Song s : appManager.songList) {
+                        int songId = Integer.parseInt(s.getId());
+                        if (songId > largestId)
+                            largestId = songId;
+                    }
+
+                    largestId++;
+                    i.putExtra("id", "" + largestId);
+                    startActivity(i);
+                }
+            });
         songListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 Log.d("User", user.getEmail());
-                if (!isUserAdmin(FirebaseAuth.getInstance().getCurrentUser()))
+                if (!isUserAdmin(FirebaseAuth.getInstance().getCurrentUser())) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(appManager.songList.get(i).getLink()));
+                    startActivity(browserIntent);
                     return;
+                }
 
                 Intent crud = new Intent(getBaseContext(), CrudActivity.class);
                 Song song = appManager.songList.get(i);
@@ -116,14 +139,18 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
-        if (fill) {
-            Song s1 = new Song("Title1", "Artist1", "Album1", "Link1", "2017/02/03");
-            Song s2 = new Song("Title2", "Artist2", "Album2", "Link2", "2017/02/03");
-            s1.setId("1");
-            s2.setId("2");
-            s1.writeToDb(databaseReference);
-            s2.writeToDb(databaseReference);
-        }
+        filterSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                AppManager.getInstance().filterSongs(s.toLowerCase());
+                return false;
+            }
+        });
     }
 
     @Override

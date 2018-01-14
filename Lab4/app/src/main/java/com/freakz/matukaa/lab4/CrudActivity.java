@@ -66,39 +66,38 @@ public class CrudActivity extends AppCompatActivity {
         crudEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                crudDeleteButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                                context);
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        context);
 
-                        // set title
-                        alertDialogBuilder.setTitle("Delete");
+                // set title
+                alertDialogBuilder.setTitle("Edit");
 
-                        // set dialog message
-                        alertDialogBuilder
-                                .setMessage("Are you sure you want to delete?")
-                                .setCancelable(false)
-                                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int clickId) {
-                                        updateSong();
-                                    }
-                                })
-                                .setNegativeButton("No",new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        // if this button is clicked, just close
-                                        // the dialog box and do nothing
-                                        dialog.cancel();
-                                    }
-                                });
+                // set dialog message
+                alertDialogBuilder
+                        .setMessage("Are you sure you want to modify the data?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int clickId) {
+                                String title = crudTitleTB.getText().toString().trim();
+                                String album = crudAlbumTB.getText().toString().trim();
+                                String artist = crudArtistTB.getText().toString().trim();
+                                AppManager.getInstance().updateSong(id, title, artist, album);
+                                onBackPressed();
+                            }
+                        })
+                        .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // if this button is clicked, just close
+                                // the dialog box and do nothing
+                                dialog.cancel();
+                            }
+                        });
 
-                        // create alert dialog
-                        AlertDialog alertDialog = alertDialogBuilder.create();
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
 
-                        // show it
-                        alertDialog.show();
-                    }
-                });
+                // show it
+                alertDialog.show();
             }
         });
 
@@ -117,7 +116,8 @@ public class CrudActivity extends AppCompatActivity {
                         .setCancelable(false)
                         .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int clickId) {
-                                deleteSong();
+                                AppManager.getInstance().deleteSong(id);
+                                onBackPressed();
                             }
                         })
                         .setNegativeButton("No",new DialogInterface.OnClickListener() {
@@ -135,19 +135,6 @@ public class CrudActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
-    }
-
-    void updateSong() {
-        DatabaseReference songRef = FirebaseDatabase.getInstance().getReference().child("Songs").child(id);
-        songRef.child("title").setValue(crudTitleTB.getText().toString().trim());
-        songRef.child("album").setValue(crudAlbumTB.getText().toString().trim());
-        songRef.child("artist").setValue(crudArtistTB.getText().toString().trim());
-        onBackPressed();
-    }
-
-    void deleteSong(){
-        FirebaseDatabase.getInstance().getReference().child("Songs").child(currentSong.id).removeValue();
-        onBackPressed();
     }
 
     private void setupChart()

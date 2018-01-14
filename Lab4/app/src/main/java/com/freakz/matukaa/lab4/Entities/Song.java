@@ -94,6 +94,6 @@ public class Song {
         childRef.child("artist").setValue(artist);
         childRef.child("album").setValue(album);
         childRef.child("link").setValue(link);
-        childRef.child("date").setValue(publish_date);
+        childRef.child("publish_date").setValue(publish_date);
     }
 }

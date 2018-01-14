@@ -9,6 +9,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.freakz.matukaa.lab4.Entities.Song;
+import com.freakz.matukaa.lab4.Manager.AppManager;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
@@ -43,7 +44,7 @@ public class AddSongActivity extends AppCompatActivity {
                         String album = albumEditText.getText().toString().trim();
                         String link = linkEditText.getText().toString().trim();
                         String date = dateEditText.getText().toString().trim();
-                        addSong(title, artist, album, link, date, id);
+                        AppManager.getInstance().addSong(title, artist, album, link, date, id);
                     }
                 };
                 new Thread(runnable).start();
@@ -51,12 +52,6 @@ public class AddSongActivity extends AppCompatActivity {
             }
         });
         setupPicker();
-    }
-
-    void addSong(String title, String artist, String album, String link, String date, String id){
-        Song song = new Song(title, artist, album, link, date);
-        song.setId(id);
-        song.writeToDb(FirebaseDatabase.getInstance().getReference());
     }
 
     void setupPicker(){
